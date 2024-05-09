@@ -1,0 +1,371 @@
+{
+	"info": {
+		"_postman_id": "8c358454-d471-426f-be7f-3657081f0c56",
+		"name": "Medica_APP",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "32002763"
+	},
+	"item": [
+		{
+			"name": "APIs",
+			"item": [
+				{
+					"name": "register for patient",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "username",
+									"value": "user374",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "testdoctor@example.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "securepassword",
+									"type": "text"
+								},
+								{
+									"key": "confirmation",
+									"value": "securepassword",
+									"type": "text"
+								},
+								{
+									"key": "first_name",
+									"value": "John",
+									"type": "text"
+								},
+								{
+									"key": "last_name",
+									"value": "Doe",
+									"type": "text"
+								},
+								{
+									"key": "type",
+									"value": "patient",
+									"type": "text"
+								},
+								{
+									"key": "specialization",
+									"value": "Cardiology",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "clinic_location",
+									"value": "123 Test Street, Test City, Test Country",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": "http://127.0.0.1:8000/api/register"
+					},
+					"response": []
+				},
+				{
+					"name": "register for doctor",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "username",
+									"value": "user3899doctor8899",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "user123@example.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "securepassword",
+									"type": "text"
+								},
+								{
+									"key": "confirmation",
+									"value": "securepassword",
+									"type": "text"
+								},
+								{
+									"key": "first_name",
+									"value": "John",
+									"type": "text"
+								},
+								{
+									"key": "last_name",
+									"value": "Doe",
+									"type": "text"
+								},
+								{
+									"key": "type",
+									"value": "doctor",
+									"type": "text"
+								},
+								{
+									"key": "specialization",
+									"value": "Cardiology",
+									"type": "text"
+								},
+								{
+									"key": "clinic_location",
+									"value": "123 Health St, Meditown",
+									"type": "text"
+								},
+								{
+									"key": "profile_picture",
+									"value": "null",
+									"type": "text"
+								},
+								{
+									"key": "time_slot",
+									"value": "2",
+									"type": "text"
+								}
+							]
+						},
+						"url": "http://127.0.0.1:8000/api/register"
+					},
+					"response": []
+				},
+				{
+					"name": "login patient",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"username\": \"user3789\",\r\n  \"password\": \"securepassword\",\r\n  \"type\": \"patient\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://127.0.0.1:8000/api/login"
+					},
+					"response": []
+				},
+				{
+					"name": "Get me",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://127.0.0.1:8000/api/current_user"
+					},
+					"response": []
+				},
+				{
+					"name": "logout",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": "http://127.0.0.1:8000/api/logout"
+					},
+					"response": []
+				},
+				{
+					"name": "request_appointment",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "date",
+									"value": "2024-05-01",
+									"type": "text"
+								},
+								{
+									"key": "request_time_slot",
+									"value": "9:00 - 12:00",
+									"type": "text"
+								},
+								{
+									"key": "patient_message",
+									"value": "Looking forward to the consultation.",
+									"type": "text"
+								},
+								{
+									"key": "doctor_id",
+									"value": "4",
+									"type": "text"
+								},
+								{
+									"key": "patient_file",
+									"type": "file",
+									"src": "/E:/FreeLance/medical_app/desktop_screenshot.jpeg"
+								}
+							]
+						},
+						"url": "http://127.0.0.1:8000/api/request_appointment"
+					},
+					"response": []
+				},
+				{
+					"name": "PatientReconDataView",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "recon_file",
+									"type": "file",
+									"src": "postman-cloud:///1ef019e5-f9e8-46e0-bb70-dec92c3a9be5"
+								},
+								{
+									"key": "message",
+									"value": "cancer",
+									"type": "text"
+								}
+							]
+						},
+						"url": "http://127.0.0.1:8000/api/patient-recon-data"
+					},
+					"response": []
+				},
+				{
+					"name": "delete_appointment",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "date",
+									"value": "2024-05-01",
+									"type": "text"
+								},
+								{
+									"key": "request_time_slot",
+									"value": "9:00 - 12:00",
+									"type": "text"
+								},
+								{
+									"key": "patient_message",
+									"value": "Looking forward to the consultation.",
+									"type": "text"
+								},
+								{
+									"key": "doctor_id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "patient_file",
+									"type": "file",
+									"src": "postman-cloud:///1ef019e5-f9e8-46e0-bb70-dec92c3a9be5"
+								}
+							]
+						},
+						"url": "http://127.0.0.1:8000/api/delete_appointment/3"
+					},
+					"response": []
+				},
+				{
+					"name": "send-message",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"receiver_username\": \"user377\",\r\n  \"content\": \"First hi \"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://127.0.0.1:8000/api/send-message"
+					},
+					"response": []
+				},
+				{
+					"name": "notifications",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "username",
+									"value": "user37",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "user123@example.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "securepassword",
+									"type": "text"
+								},
+								{
+									"key": "confirmation",
+									"value": "securepassword",
+									"type": "text"
+								},
+								{
+									"key": "first_name",
+									"value": "John",
+									"type": "text"
+								},
+								{
+									"key": "last_name",
+									"value": "Doe",
+									"type": "text"
+								},
+								{
+									"key": "type",
+									"value": "patient",
+									"type": "text"
+								},
+								{
+									"key": "specialization",
+									"value": "Cardiology",
+									"type": "text"
+								}
+							]
+						},
+						"url": "http://127.0.0.1:8000/api/register"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

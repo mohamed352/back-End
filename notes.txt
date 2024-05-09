@@ -1,0 +1,4 @@
+step -1 .venv\Scripts\activate	
+	
+step -2 python manage.py runserver
+manage.py runserver 0.0.0.0:8000
