@@ -7,6 +7,7 @@ import json
 import datetime
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404
+from django.core.handlers.wsgi import WSGIRequest
 
 from .models import Patient, Doctor, Appointment, User, PatientReconData, Message, Notification, TimeSlot
 
@@ -74,7 +75,6 @@ def RegisterUser(request):
         return JsonResponse({"message": str(e)}, status=500)
 
 
-
 @csrf_exempt
 @require_http_methods(["POST"])
 def LoginUser(request):
@@ -93,7 +93,7 @@ def LoginUser(request):
             patient = Patient.objects.get(user=user)
             if patient is None:
                 return JsonResponse({"message": "Username, type and/or password is incorrect"}, status=406)
-        elif data.get("type") == "Doctor":
+        elif data.get("type") == "doctor":
             doctor = Doctor.objects.get(user=user)
             if doctor is None:
                 return JsonResponse({"message": "Username, type and/or password is incorrect"}, status=406)
@@ -120,7 +120,7 @@ def CurrentUser(request):
     user_type = request.user.type
     if user_type == "patient":
         return JsonResponse(Patient.objects.get(user=request.user).full_serialize(), status=200)
-    elif user_type == "Doctor":
+    elif user_type == "doctor":
         return JsonResponse(Doctor.objects.get(user=request.user).full_serialize(), status=200)
     else:
         return JsonResponse({"message": f"{request.user.username} is not a patient or a doctor"}, status=401)
@@ -130,29 +130,46 @@ def CurrentUser(request):
 @login_required
 @require_http_methods(["POST"])
 def RequestAppointment(request):
-    data = json.loads(request.body)
-    date = data.get("date")
-    time_slot_id = data.get("time_slot_id")
-    patient_message = data.get("patient_message")
-    doctor_id = data.get("doctor_id")
-    patient_file = request.FILES.get("patient_file", None)
+    if request.content_type == 'multipart/form-data':
+        date = request.POST.get('date')
+        time_slot_id = request.POST.get('time_slot_id')
+        patient_message = request.POST.get('patient_message')
+        doctor_id = request.POST.get('doctor_id')
+        patient_file = request.FILES.get('patient_file', None)
+    else:
+        try:
+            data = json.loads(request.body)
+            date = data.get('date')
+            time_slot_id = data.get('time_slot_id')
+            patient_message = data.get('patient_message')
+            doctor_id = data.get('doctor_id')
+            patient_file = None
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "Malformed JSON or empty body"}, status=400)
 
     try:
         doctor = Doctor.objects.get(pk=doctor_id)
         time_slot = TimeSlot.objects.get(pk=time_slot_id)
+        patient = Patient.objects.get(user=request.user)
+
         appointment = Appointment(
             date=date,
-            time_slot=time_slot,
+            request_time_slot=time_slot,
             patient_message=patient_message,
-            patient=Patient.objects.get(user=request.user),
+            patient=patient,
             doctor=doctor,
             patient_file=patient_file
         )
         appointment.save()
         return JsonResponse({"message": "Appointment successfully requested."}, status=201)
+    except Doctor.DoesNotExist:
+        return JsonResponse({"error": "Doctor not found"}, status=404)
+    except TimeSlot.DoesNotExist:
+        return JsonResponse({"error": "Time slot not found"}, status=404)
+    except Patient.DoesNotExist:
+        return JsonResponse({"error": "Patient not found"}, status=404)
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=400)
-
 
 
 @login_required
@@ -225,7 +242,7 @@ def AcceptAppointment(request):
     """Accepts an appointment if the user is a doctor"""
     if request.method != "PUT":
         return JsonResponse({"error": "PUT request is required."}, status=400)
-    elif request.user.type != "Doctor":
+    elif request.user.type != "doctor":
         return JsonResponse(
             {"error", f"{request.user.username} is not a doctor, this is a valid operation only for doctors."},
             status=406)
@@ -287,7 +304,7 @@ def RejectAppointment(request):
     """Rejects an appointments if the user is a doctor"""
     if request.method != "PUT":
         return JsonResponse({"error": "PUT request is required."}, status=400)
-    elif request.user.type != "Doctor":
+    elif request.user.type != "doctor":
         return JsonResponse(
             {"error", f"{request.user.username} is not a doctor, this is a valid operation only for doctors."},
             status=406)
@@ -343,7 +360,7 @@ def AcceptedDoctorAppointments(request):
 @require_http_methods(["GET"])
 def RequestedDoctorAppointments(request):
     """Returns a list of requested appointments of a doctor"""
-    if request.user.type == "Doctor":
+    if request.user.type == "doctor":
         appointments = Appointment.objects.filter(
             doctor=Doctor.objects.get(user=request.user), accepted=False, rejected=False)
         appointments = appointments.order_by("date").all()
