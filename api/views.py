@@ -55,7 +55,7 @@ def RegisterUser(request):
         user.type = user_type
         print("Done USer save")
 
-        if user_type == "doctor":
+        if user_type == "Doctor":
             # time_slot = TimeSlot.objects.get(pk=time_slot_id)
             print("Done doctor")
             print(TimeSlot.objects.get(pk=time_slot_id))
@@ -93,7 +93,7 @@ def LoginUser(request):
             patient = Patient.objects.get(user=user)
             if patient is None:
                 return JsonResponse({"message": "Username, type and/or password is incorrect"}, status=406)
-        elif data.get("type") == "doctor":
+        elif data.get("type") == "Doctor":
             doctor = Doctor.objects.get(user=user)
             if doctor is None:
                 return JsonResponse({"message": "Username, type and/or password is incorrect"}, status=406)
@@ -120,7 +120,7 @@ def CurrentUser(request):
     user_type = request.user.type
     if user_type == "patient":
         return JsonResponse(Patient.objects.get(user=request.user).full_serialize(), status=200)
-    elif user_type == "doctor":
+    elif user_type == "Doctor":
         return JsonResponse(Doctor.objects.get(user=request.user).full_serialize(), status=200)
     else:
         return JsonResponse({"message": f"{request.user.username} is not a patient or a doctor"}, status=401)
@@ -242,7 +242,7 @@ def AcceptAppointment(request):
     """Accepts an appointment if the user is a doctor"""
     if request.method != "PUT":
         return JsonResponse({"error": "PUT request is required."}, status=400)
-    elif request.user.type != "doctor":
+    elif request.user.type != "Doctor":
         return JsonResponse(
             {"error", f"{request.user.username} is not a doctor, this is a valid operation only for doctors."},
             status=406)
@@ -304,7 +304,7 @@ def RejectAppointment(request):
     """Rejects an appointments if the user is a doctor"""
     if request.method != "PUT":
         return JsonResponse({"error": "PUT request is required."}, status=400)
-    elif request.user.type != "doctor":
+    elif request.user.type != "Doctor":
         return JsonResponse(
             {"error", f"{request.user.username} is not a doctor, this is a valid operation only for doctors."},
             status=406)
@@ -344,7 +344,7 @@ def PatientAppointments(request):
 @require_http_methods(["GET"])
 def AcceptedDoctorAppointments(request):
     """Returns a list of accepted appointments of a doctor"""
-    if request.user.type == "doctor":
+    if request.user.type == "Doctor":
         appointments = Appointment.objects.filter(
             doctor=Doctor.objects.get(user=request.user), accepted=True)
         appointments = appointments.order_by("date").all()
@@ -360,7 +360,7 @@ def AcceptedDoctorAppointments(request):
 @require_http_methods(["GET"])
 def RequestedDoctorAppointments(request):
     """Returns a list of requested appointments of a doctor"""
-    if request.user.type == "doctor":
+    if request.user.type == "Doctor":
         appointments = Appointment.objects.filter(
             doctor=Doctor.objects.get(user=request.user), accepted=False, rejected=False)
         appointments = appointments.order_by("date").all()
