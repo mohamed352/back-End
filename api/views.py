@@ -334,8 +334,7 @@ def PatientAppointments(request):
         appointments = Appointment.objects.filter(
             patient=Patient.objects.get(user=request.user))
         appointments = appointments.order_by("date").all()
-        return JsonResponse({"appointments": [appointment.serialize_for_patient() for appointment in appointments]},
-                            status=200)
+        return JsonResponse({"appointments": [appointment.serialize_for_patient() for appointment in appointments]}, status=200)
     else:
         return JsonResponse({"message": f"{request.user.username} is not a patient or a doctor"}, status=401)
 
@@ -363,7 +362,7 @@ def RequestedDoctorAppointments(request):
     if request.user.type == "Doctor":
         appointments = Appointment.objects.filter(
             doctor=Doctor.objects.get(user=request.user), accepted=False, rejected=False)
-        appointments = appointments.order_by("date").all()
+        appointments = appointments.all()
         return JsonResponse({"appointments": [appointment.serialize_for_doctor() for appointment in appointments]},
                             status=200)
     else:
